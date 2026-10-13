@@ -48,7 +48,7 @@ document.querySelectorAll('.nav').forEach(link=>link.addEventListener('click',()
 const SB_URL='https://jegvufypvzbtrihvqpzu.supabase.co';
 const SB_KEY='sb_publishable_hTrV939MPHFs_OiqkMBiyQ_fG6jmhUy';
 const SB_HDR={apikey:SB_KEY,Authorization:'Bearer '+SB_KEY};
-function mapVehicle(v){const u=(v||'').trim().toUpperCase();const m={CAR:'Mobil',MOTORCYCLE:'Motor',MOTOR:'Motor',PICKUP:'Pickup',TRUCK:'Truk',BUS:'Bus'};return m[u]|| (v&&v.trim()? v.trim().charAt(0)+v.trim().slice(1).toLowerCase():'Tidak tersedia')}
+function mapVehicle(v){const u=(v||'').trim().toUpperCase();const m={CAR:'Mobil',MOBIL:'Mobil',MOTORCYCLE:'Motor',MOTOR:'Motor',PICKUP:'Pickup',TRUCK:'Truk',TRUK:'Truk',BUS:'Bus',VAN:'Van'};return m[u]||'Tidak tersedia'}
 async function sbGet(p){const r=await fetch(SB_URL+'/rest/v1/'+p,{headers:SB_HDR});if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}
 async function loadRows(){const all=[],lim=1000;let off=0;while(true){const b=await sbGet(`wuzz_sales?select=source_row,nama,tgl,jenis_kendaraan,status,city&is_meta=eq.false&order=source_row.asc&limit=${lim}&offset=${off}`);if(!Array.isArray(b)||!b.length)break;all.push(...b);off+=b.length;if(b.length<lim)break}
  return all.map(r=>({id:'PARKEE-'+(r.source_row??''),row:r.source_row,name:(r.nama||'').trim(),date:r.tgl||'',vehicle:mapVehicle(r.jenis_kendaraan),status:(r.status||'').trim(),city:(r.city&&r.city.trim())||'Belum diisi'}))}
